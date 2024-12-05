@@ -4,6 +4,7 @@ import cors from "cors";
 import { PORT } from './config/config.js';
 import rotuerTypeUsers from './router/TypeUsersRouter.js';
 import  { RouterUsuer } from './router/UserRouter.js';
+import { RouterPerson } from './router/PersonRouter.js';
 import { RouterBus } from './router/busRouter.js';
 import { sequelize } from "./db/conexion.js";
 
@@ -15,6 +16,7 @@ app.use(cors());
 app.use('/api', rotuerTypeUsers);
 app.use('/api', RouterUsuer);
 app.use('/api', RouterBus);
+app.use('/api', RouterPerson)
 
 const main = async () => {
     try {

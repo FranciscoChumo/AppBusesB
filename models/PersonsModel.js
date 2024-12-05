@@ -1,7 +1,6 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../db/conexion.js";
 
-
 export const PersonsModel = sequelize.define(
   "persons",
   {
