@@ -17,12 +17,9 @@ export const createBus = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const existingBus = await BusModel.findOne({where: { Number:Number }});
-    if (existingBus) {
-      return res.status(409).json({ message: "Bus already exists with this number" });
-    }
-
+    // Verifica si el archivo se ha subido correctamente
     const image = req.file ? req.file.filename : null;
+    console.log("Imagen subida:", image);
 
     const newBus = await BusModel.create({
       buss,
