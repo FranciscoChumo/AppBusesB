@@ -12,6 +12,7 @@ export const getBuss = async (req,res)=>{
 export const createBus = async (req, res) => {
   try {
     const { buss, Number, departure_time, arrival_time } = req.body;
+    console.log("Datos recibidos:", req.body);
 
     if (!buss || !Number || !departure_time || !arrival_time) {
       return res.status(400).json({ message: "All fields are required" });
