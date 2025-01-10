@@ -152,6 +152,7 @@ export const login = async (req, res) => {
     });
       let dataUser={
           id:user.id,
+          idperson:user.person_id,
           user:user.user,
           email:user.email,
           typeusers_id:user.typeusers_id
