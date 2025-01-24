@@ -38,8 +38,8 @@ export const getOneUser = async (req, res) => {
 };
 export const createUsers = async (req, res) => {
   try {
-    const { user, email, password } = req.body;
-    if (!(user ||  email ||  password)) {
+    const { user, email, password,typeusers_id } = req.body;
+    if (!(user ||  email ||  password||typeusers_id)) {
       res.status(400).json({ message: "all input is required" });
     }
     // check if email already exist
@@ -57,7 +57,7 @@ export const createUsers = async (req, res) => {
       user,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
-      typeusers_id:1,
+      typeusers_id:typeusers_id,
       person_id:person.id
 
     });
