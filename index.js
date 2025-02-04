@@ -7,11 +7,17 @@ import  { RouterUsuer } from './router/UserRouter.js';
 import { RouterPerson } from './router/PersonRouter.js';
 import { RouterBus } from './router/busRouter.js';
 import { sequelize } from "./db/conexion.js";
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const _PORT = PORT || 3000;
 const app = express();
 app.use(express.json());
 app.use(cors());
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use('/api', rotuerTypeUsers);
 app.use('/api', RouterUsuer);

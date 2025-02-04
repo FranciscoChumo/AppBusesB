@@ -29,6 +29,14 @@ export const BusModel = sequelize.define(
         type: DataTypes.STRING,
         allowNull: false,
       },
+    terminal_destination:{
+      type:DataTypes.STRING,
+      allowNull:false,
+      },
+    terminal_arrival:{
+        type:DataTypes.STRING,
+        allowNull:false,
+    },
     state: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
@@ -38,5 +46,6 @@ export const BusModel = sequelize.define(
     timestamps: false,
   }
 );
+
 
 

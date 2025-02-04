@@ -7,7 +7,7 @@ var storage = multer.diskStorage({
       cb(null, './public/uploads/personas')
     },
     filename: function (req, file, cb) {
-       const { id } = req.params;
+       const { id } = req.params; 
         cb(null,  id +"-"+file.originalname );
     }
   });

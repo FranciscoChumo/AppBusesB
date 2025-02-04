@@ -1,20 +1,31 @@
-import { BusModel } from "../models/busModel.js";
+import { BusModel } from "../models/BusModel.js";
 export const getBuss = async (req,res)=>{
   try{
     const bus=await BusModel.findAll({
-      attributes:['id','buss','Number','departure_time','arrival_time']
+      attributes:['buss','Number','departure_time','arrival_time','terminal_destination','terminal_arrival','image']
     },{where:{state:true}});
     res.status(200).json({bus});
   }catch(error){
     res.status(500).json({ error: error.message });
   }
 };
+export const searchBus=async(req, res)=>{
+  try{
+const{buss}=req.body;
+const Bus = await BusModel.findAll({where:{buss:buss}});
+res.status(200).json({Buss:Bus})
+  }catch(error){
+    console.log(error);
+    res.status(500).json({ message:"Error search" });
+  }
+}
+
 export const createBus = async (req, res) => {
   try {
-    const { buss, Number, departure_time, arrival_time } = req.body;
+    const { buss, Number, departure_time, arrival_time,terminal_destination,terminal_arrival } = req.body;
     console.log("Datos recibidos:", req.body);
 
-    if (!buss || !Number || !departure_time || !arrival_time) {
+    if (!buss || !Number || !departure_time || !arrival_time ||!terminal_destination ||!terminal_arrival) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -27,6 +38,8 @@ export const createBus = async (req, res) => {
       Number,
       departure_time,
       arrival_time,
+      terminal_destination,
+      terminal_arrival,
       image,
     });
 
@@ -42,70 +55,57 @@ export const createBus = async (req, res) => {
   }
 };
 export const updateBus = async (req, res) => {
-  const { buss } = req.body;
-  if (!(buss)) {
+  const { buss, Number,
+    departure_time,
+    arrival_time,
+    terminal_destination,
+    terminal_arrival, } = req.body;
+  if (!(buss ||Number||departure_time||arrival_time||terminal_destination||terminal_arrival)) {
     res.status(400).json({ message: "bus is required" });
   }
   const Buss = await BusModel.findOne({where:{id:req.params.id}});
   if(Buss){
-    Buss.set({...Buss,buss:buss});
+    Buss.set({...Buss,buss:buss, Number:Number
+      ,departure_time:departure_time,
+      arrival_time:arrival_time,
+      terminal_destination:terminal_destination,
+      terminal_arrival:terminal_arrival});
       await Buss.save();
       res.status(200).json({ message: "update" });
   }else{
       res.status(404).json({message: "user not found"});
   }
 };
-export const updateBusNumber = async (req, res) => {
-  const { Number } = req.body;
-  if (!(Number)) {
-    res.status(400).json({ message: "Number is required" });
+export const ImageBus = async (req, res) => {
+  const { id } = req.params;
+  const{file}=req.file;
+  if (!file) {
+   return res.status(400).json({ message: "image is required" });
   }
-  const oldUser = await BusModel.findOne({ where: { Number: Number } });
-  if (oldUser) {
-    return res.status(409).json("Number already exist");
+  try{
+    const Bus = await BusModel.findOne({ where: { id } });
+    if (Bus) {
+      Bus.set({
+        ...Bus,image:file.filename,
+      });
+      await Bus.save()
+      return res.status(409).json({message:"image update "});
+    }else{
+      return res.status(404).json({ message: "User not found" });
+
+    }
+  }catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "An error occurred while updating the image" });
   }
-  const userD = await BusModel.findOne({where:{id:req.params.id}});
-  if(userD){
-    userD.set({...userD,Number:Number});
-      await userD.save();
-      res.status(200).json({ message: "update" });
-  }else{
-      res.status(404).json({message: "user not found"});
-  }
+ 
 };
-export const updateBuss_time = async (req, res) => {
-  const { departure_time } = req.body;
-  if (!(departure_time)) {
-    res.status(400).json({ message: "departure_time is required" });
-  }
-  const userD = await BusModel.findOne({where:{id:req.params.id}});
-  if(userD){
-    userD.set({...userD,departure_time:departure_time});
-      await userD.save();
-      res.status(200).json({ message: "update" });
-  }else{
-      res.status(404).json({message: "user not found"});
-  }
-};
-export const update_arrival_time = async (req, res) => {
-  const { arrival_time } = req.body;
-  if (!(arrival_time)) {
-    res.status(400).json({ message: "arrival_time is required" });
-  }
-  const userD = await BusModel.findOne({where:{id:req.params.id}});
-  if(userD){
-    userD.set({...userD,arrival_time:arrival_time});
-      await userD.save();
-      res.status(200).json({ message: "update" });
-  }else{
-      res.status(404).json({message: "user not found"});
-  }
-};
+
 export const deleteBus = async (req, res) => {
-  const buss = await BusModel.findOne({ where: { id: req.params.id } });
-  if (buss) {
-    buss.set({ ...buss, state: false });
-    await user.save();
+  const Buss = await BusModel.findOne({ where: { id: req.params.id } });
+  if (Buss) {
+    Buss.set({ ...Buss, state: false });
+    await Buss.save();
     res.status(200).json({ message: "delete" });
   } else {
     res.status(404).json({ message: "type not found" });
