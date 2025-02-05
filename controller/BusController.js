@@ -2,13 +2,33 @@ import { BusModel } from "../models/BusModel.js";
 export const getBuss = async (req,res)=>{
   try{
     const bus=await BusModel.findAll({
-      attributes:['buss','Number','departure_time','arrival_time','terminal_destination','terminal_arrival','image']
-    },{where:{state:true}});
+      where:{state:true},
+      attributes:['id','buss','Number','departure_time','arrival_time','terminal_destination','terminal_arrival','image']
+    });
     res.status(200).json({bus});
   }catch(error){
     res.status(500).json({ error: error.message });
   }
 };
+export const getBusById = async (req, res) => {
+  try {
+    const { id } = req.params; // Obtener el ID desde la URL
+
+    const bus = await BusModel.findOne({
+      where: { id }, // Buscar el bus por ID
+      attributes: ['buss', 'Number', 'departure_time', 'arrival_time', 'terminal_destination', 'terminal_arrival', 'image']
+    });
+
+    if (!bus) {
+      return res.status(404).json({ message: "Bus not found" });
+    }
+
+    res.status(200).json({ bus });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const searchBus=async(req, res)=>{
   try{
 const{buss}=req.body;
@@ -78,27 +98,25 @@ export const updateBus = async (req, res) => {
 };
 export const ImageBus = async (req, res) => {
   const { id } = req.params;
-  const{file}=req.file;
-  if (!file) {
-   return res.status(400).json({ message: "image is required" });
-  }
-  try{
-    const Bus = await BusModel.findOne({ where: { id } });
-    if (Bus) {
-      Bus.set({
-        ...Bus,image:file.filename,
-      });
-      await Bus.save()
-      return res.status(409).json({message:"image update "});
-    }else{
-      return res.status(404).json({ message: "User not found" });
+  const file = req.file; // Asegúrate de que se usa req.file
 
+  if (!file) {
+    return res.status(400).json({ message: "Image is required" });
+  }
+
+  try {
+    const bus = await BusModel.findOne({ where: { id } });
+    if (bus) {
+      bus.image = file.filename; // Actualizar solo la imagen
+      await bus.save();
+      return res.status(200).json({ message: "Image updated successfully", image: file.filename });
+    } else {
+      return res.status(404).json({ message: "Bus not found" });
     }
-  }catch (error) {
+  } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "An error occurred while updating the image" });
   }
- 
 };
 
 export const deleteBus = async (req, res) => {

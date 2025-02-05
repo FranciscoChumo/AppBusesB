@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer'; 
-import { createBus, deleteBus, getBuss, searchBus, updateBus,  } from '../controller/BusController.js';
+import { createBus, deleteBus, getBuss,getBusById, searchBus, updateBus, ImageBus } from '../controller/BusController.js';
 
 
 const rotuer = express.Router();
@@ -22,5 +22,7 @@ rotuer.get('/bus',  getBuss);
 rotuer.delete('/bus/:id',  deleteBus);
 rotuer.put('/bus/:id',  updateBus);
 rotuer.post('/Search/bus',searchBus);
+rotuer.get("/bus/:id", getBusById);
+rotuer.put("/bus/:id/image", upload.single("file"), ImageBus);
 export const RouterBus = rotuer;
  
